@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset=utf-8 />
+	<title>Map Template Browser Title</title>
+	<meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.css" />
+	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.1/dist/leaflet.css" />
+	<link href="https://fonts.googleapis.com/css?family=Noto+Sans" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=Lora" rel="stylesheet">
+	
+	<style>
+		body {
+			margin: 0;
+			padding: 0;
+			background: "whitesmoke";
+			font-family: "Noto Sans", sans-serif;
+			color: #3d3d3d;
+		}
+
+		h1 {
+			position: absolute;
+			margin-top: 0;
+			top: 10px;
+			left: 500px;
+			font-size: 2em;
+			color: white;
+			font-family: Calibri, 'Trebuchet MS', sans-serif;
+			letter-spacing: .04em;
+			padding: 10px 15px;
+			background: #3187D1;
+			border: 1px solid black;
+			border-radius: 3px;
+			z-index: 800;
+		}
+
+		h2 {
+			font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+			letter-spacing: .04em;
+		}
+
+		#map {
+			position: absolute;
+			top: 0;
+			bottom: 0;
+			width: 100%;
+		}
+
+		section {
+			position: absolute;
+			bottom: 0;
+			right: 10px;
+			width: 280px;
+			margin: 20px auto;
+			padding: 0 15px;
+			color: white;
+			background: #3187D1;
+			border: 1px solid black;
+			border-radius: 3px;
+			z-index: 800;
+		}
+
+		p {
+			font-size: .9em;
+			line-height: 1.5em;
+		}
+
+		a {
+			color: yellow;
+			text-decoration: none;
+		}
+
+		a:hover {
+			text-decoration: underline;
+		}
+	</style>
+</head>
+
+	<h1>Downtown Raleigh Walking Tour</h1>
+
+	<div id='map'></div>
+
+	<section>
+		<h2>Visiting Raleigh?</h2>
+
+		<p>Raleigh is the capital of North Carolina and offers plenty of fun activities for families. The downtown area is walkable and filled with eateries, museums, and shopping. </p>
+
+		<p>Although Raleigh is bustling with lively crowds and events, the downtown is not overwhelmingly large and is perfect for a daytrip. VisitRaleigh.org has compiled a self-guided walking tour for visitors, taking the participant through the cultural hubs and most interesting parts of the city.
+		</p>
+
+		<p>Source: <a href="https://www.visitraleigh.com/plan-a-trip/itineraries/one-day-tour-of-raleigh/">One-Day Tour of Raleigh, N.C.</a></p>
+		<p>Map by Autumn Lundi</p>
+
+	</section>
+
+	<script src="http://code.jquery.com/jquery-3.1.1.min.js"></script>
+	<script src="https://unpkg.com/leaflet@1.0.1/dist/leaflet.js"></script>
+
+    <script src="Data/RaleighCoordinates.js"></script>
+
+	<script>
+
+
+		var options = {
+			center: [35.7852578634649, -78.6406248410073],
+			zoom: 15
+		}
+
+
+		console.log(data);
+
+
+		var map = L.map('map', options);
+
+
+var CartoDB_Voyager = L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+	attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+	subdomains: 'abcd',
+	maxZoom: 20
+}).addTo(map);
+
+
+
+var myRoute = L.geoJson(data, {
+ filter : function(feature) {
+ if(feature.geometry.type =="LineString") {
+ return feature;
+ }
+},
+ style : function (feature) {
+ return {
+ color: '#00008B',
+ dashArray: "4, 4"
+ }
+ }
+ }).addTo(map);
+ var myStops = L.geoJson(data, {
+filter : function(feature) {
+if(feature.geometry.type == "Point") {
+return feature;
+}
+},
+onEachFeature : function(feature, layer) {
+layer.bindPopup(
+	"<h3>"+ 
+		feature.properties['Name']+
+		"</h3>" + "<p>" + feature.properties['Price']+
+		"</h3>" + "<p>" + feature.properties['Description']+
+			"</h3>" + "<p>" + feature.properties['Address']+
+				"</h3>" + "<p>" + feature.properties['Website']+
+						"</h3>" + "</p>"+ feature.properties['Phone']+
+				"</h3>"+ "<p>"+ feature.properties['Hours']
+			,);
+
+}
+}).addTo(map);
+
+
+	</script>
+
+</body>
+
+</html>
